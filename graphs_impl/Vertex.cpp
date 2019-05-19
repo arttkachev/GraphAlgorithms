@@ -19,6 +19,24 @@ void Vertex<T>::setIndex(int32_t indexToSet)
 	index = indexToSet;		
 }
 
+template<typename T>
+void Vertex<T>::setParentVertex(Vertex<T>* parentVertexToSet)
+{
+	parent = parentVertexToSet;
+}
+
+template<typename T>
+void Vertex<T>::setVertexVisited(bool isVertexVisited)
+{
+	isVisited = isVertexVisited;
+}
+
+template<typename T>
+void Vertex<T>::setDistance(float distanceToSet)
+{
+	distance = distanceToSet;
+}
+
 
 
 
