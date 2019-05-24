@@ -1,2 +1,2 @@
 # GraphAlgorithms
-Main Game AI data structures and graph algorithms implemented with C++
+Main Game AI data structures and algorithms implemented with C++
