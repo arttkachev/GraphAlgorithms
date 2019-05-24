@@ -30,6 +30,9 @@
     <ClInclude Include="Graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SearchAlgorithms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

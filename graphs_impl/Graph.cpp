@@ -47,13 +47,13 @@ void Graph<T>::createDirectedEdge(Vertex<T>* fromVertex, Vertex<T>* toVertex, fl
 template<typename T>
 void Graph<T>::createUndirectedEdge(int32_t fromIndex, int32_t toIndex, float weight)
 {
-	adjacencyMatrix.addUndirectedEdge(fromIndex, toIndex, weight);
+	adjacencyMatrix->addUndirectedEdge(fromIndex, toIndex, weight);
 }
 
 template<typename T>
 void Graph<T>::createUndirectedEdge(Vertex<T>* fromVertex, Vertex<T>* toVertex, float weight)
 {
-	this->createUndirectedEdge(fromVertex->getIndex(), toVertex->getIndex(), weight)
+	this->createUndirectedEdge(fromVertex->getIndex(), toVertex->getIndex(), weight);
 }
 
 template<typename T>
