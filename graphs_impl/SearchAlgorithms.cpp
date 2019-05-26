@@ -24,9 +24,9 @@ void SearchAlgorithms<T>::breadthFirstSearch(Graph<T>* graph, Vertex<T>* sourceV
 		vertex->setVertexVisited(false);
 	}
 	
-	// make a queue to hold and check neighbours	
-	auto queue = new std::queue<Vertex<T>*>();
-	queue->push(sourceVertex);
+	// make a queue to hold and check neighbours FIFO	
+	std::queue<Vertex<T>*> *queue = new std::queue<Vertex<T>*>();
+	queue->push(sourceVertex);	
 
 	while (queue->size() > 0)
 	{
@@ -41,11 +41,11 @@ void SearchAlgorithms<T>::breadthFirstSearch(Graph<T>* graph, Vertex<T>* sourceV
 				neighbour->setDistance(firstVertexInQueue->getDistance() + graph->getEdgeWeight(firstVertexInQueue, neighbour));
 				neighbour->setVertexVisited(true);
 
-				// remove first element
+				// insert neighbour as last element
 				queue->push(neighbour);
 			}
 		}
-		// and set
+		// and set firstVertexInQueue visited
 		firstVertexInQueue->setVertexVisited(true);
 	}
 	
@@ -56,7 +56,7 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::breadthFirstSearchWithGoal(Graph<T
 {
 	if (sourceVertex == goalVertex)
 	{
-		return new std::vector<Vertex<T>*>* {sourceVertex};
+		return new std::vector<Vertex<T>*> {sourceVertex};
 	}
 	for (Vertex<T>* vertex : graph->getVerticies())
 	{
@@ -66,7 +66,7 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::breadthFirstSearchWithGoal(Graph<T
 	}
 
 	// make a queue to hold and check neighbours 
-	std::queue<Vertex<T>*> queue = new std::queue<Vertex<T>*>();
+	std::queue<Vertex<T>*> *queue = new std::queue<Vertex<T>*>();
 	queue->push(sourceVertex);
 
 	while (queue->size() > 0)
@@ -87,11 +87,11 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::breadthFirstSearchWithGoal(Graph<T
 					return getPathToSource(neighbour);
 				}
 
-				// remove first element
+				// insert neighbour as last element
 				queue->push(neighbour);
 			}
 		}
-		// and set
+		// and set firstVertexInQueue visited
 		firstVertexInQueue->setVertexVisited(true);
 	}
 
@@ -112,4 +112,102 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::getPathToSource(Vertex<T>* from)
 	}
 	
 	return path;
+}
+
+template<typename T>
+void SearchAlgorithms<T>::depthFirstSearch(Graph<T>* graph, Vertex<T>* sourceVertex, bool reverseNeighbours)
+{
+	for (Vertex<T>* vertex : graph->getVerticies())
+	{
+		vertex->setParentVertex(nullptr);
+		vertex->setDistance(0);
+		vertex->setVertexVisited(false);
+	}
+
+	// to track visited vertices we use a stack FILO
+	std::stack<Vertex<T>*> *stack = new std::stack<Vertex<T>*>();
+	stack->push(sourceVertex);
+
+	while (stack->size() > 0)
+	{
+		Vertex<T>* upperVertexInStack = stack->top();
+		stack->pop();
+
+		std::vector<Vertex<T>*> neighbours = graph->getAdjacentVertices(upperVertexInStack);
+		if (reverseNeighbours)
+		{
+			std::reverse(neighbours.begin(), neighbours.end());
+		}
+
+		for (Vertex<T>* neighbour : neighbours)
+		{
+			if (!neighbour->isVertexVisited())
+			{
+				neighbour->setParentVertex(upperVertexInStack);
+				neighbour->setDistance(upperVertexInStack->getDistance() + graph->getEdgeWeight(upperVertexInStack, neighbour));
+				neighbour->setVertexVisited(true);
+
+				stack->push(neighbour);
+			}
+		}
+		upperVertexInStack->setVertexVisited(true);
+
+	}
+}
+
+template<typename T>
+std::vector<Vertex<T>*>* SearchAlgorithms<T>::depthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex, bool reverseNeighbours)
+{
+	if (sourceVertex == goalVertex)
+	{
+		return new std::vector<Vertex<T>*>{ sourceVertex };
+	}
+
+	for (Vertex<T>* vertex : graph->getVerticies())
+	{
+		vertex->setParentVertex(nullptr);
+		vertex->setDistance(0);
+		vertex->setVertexVisited(false);
+	}
+
+	// make a stack to hold and check neighbours 
+	std::stack<Vertex<T>*> *stack = new std::stack<Vertex<T>*>();
+	stack->push(sourceVertex);
+
+	while (stack->size() > 0)
+	{
+		//FILO
+		Vertex<T>* upperVertexInStack = stack->top();
+		stack->pop();
+
+		std::vector<Vertex<T>*> neighbours = graph->getAdjacentVertices(upperVertexInStack);
+
+		if (reverseNeighbours)
+		{
+			std::reverse(neighbours.begin(), neighbours.end());
+		}
+
+		for (Vertex<T>* neighbour : neighbours)
+		{
+			if (!neighbour->isVertexVisited())
+			{
+				neighbour->setParentVertex(upperVertexInStack);
+				neighbour->setDistance(upperVertexInStack->getDistance() + graph->getEdgeWeight(upperVertexInStack, neighbour));
+				neighbour->setVertexVisited(true);
+
+				if (neighbour == goalVertex)
+				{
+					return getPathToSource(neighbour);
+				}
+
+				// insert neighbour on the top
+				stack->push(neighbour);
+			}
+		}
+		// and set upperVertexInStack visited
+		upperVertexInStack->setVertexVisited(true);
+	}
+
+	// no path found
+	return nullptr;	
 }
