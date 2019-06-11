@@ -3,6 +3,7 @@
 *.ncb
 *.ipch
 *.db
+*.opendb
 Debug/
 Release/
 CodeAnalyst/
