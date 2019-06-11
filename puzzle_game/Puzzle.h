@@ -16,22 +16,26 @@ public:
 	Puzzle();
 	~Puzzle();
 
+	// data member storing the algorithm in use
+	static std::string currentAlgorithm;
+
 	// utility functions
 
-	// used to get information about the current state is solvable or not
+	// checks if the passed in state can be solved or not
 	// used inside the next method to initialize the initial state for the game that can be solved
 	static bool isSolvable(std::string state);
 
-	// used to initialize our initial state of the game
+	// generates our initial random state to start the game
 	static std::string generateRandomSolvableState();
 
-	// just check if we have reached a win condition
+	// just checks if the algorithm has reached a win condition
 	static bool isWinCondition(std::string state);
 
-	// find a direction in which it is possible to move the *
+	// find next state (direction) in which it is possible to move the *
 	static std::vector<std::string> getNeighbourStates(std::string state);
 
-	// find a path between to a win state 
+	// returns a path from a start state to a win state
+	// contains all states which were visited
 	static std::vector<std::string> generatePath(std::map<std::string, std::string> parentMap, std::string endState);
 
 	// debug 
@@ -40,8 +44,6 @@ public:
 	// search functions
 	static std::vector<std::string> breadthFirstSearch(std::string initialState);
 	static std::vector<std::string> depthFirstSearch(std::string initialState);
-
-
 
 };
 

@@ -11,6 +11,7 @@ Puzzle::~Puzzle()
 {
 }
 
+std::string Puzzle::currentAlgorithm = "";
 
 bool Puzzle::isSolvable(std::string state)
 {
@@ -139,9 +140,19 @@ std::string Puzzle::printState(std::string state)
 {
 	std::string printableState;
 	printableState.append(state);
-	std::cout << "Puzzle State:";
-	std::cout << std::string(2, '\n');
-	
+	if (!isWinCondition(state))
+	{
+		std::cout << "Puzzle State:";
+		std::cout << std::string(2, '\n');
+	}
+
+	else
+	{
+		std::cout << "Win State:";
+		std::cout << std::string(2, '\n');
+	}
+
+	// make visual representation like a puzzle game
 	for (std::string::size_type i = 0; i < state.length(); i++)
 	{		
 		if (i % 3 == 2)
@@ -154,17 +165,16 @@ std::string Puzzle::printState(std::string state)
 		{
 			std::cout << "  " << printableState[i];
 		}
-		
-		//printableState.append(state);
+
 	}
-	
-	//std::cout << std::endl;
+
 	return printableState;
 }
 
 
 std::vector<std::string> Puzzle::breadthFirstSearch(std::string initialState)
 {
+	Puzzle::currentAlgorithm = "BFS";
 	if (isWinCondition(initialState))
 	{
 		return std::vector<std::string> {initialState};
@@ -180,8 +190,7 @@ std::vector<std::string> Puzzle::breadthFirstSearch(std::string initialState)
 		std::string node = queue.front();
 		queue.pop();
 
-		// searching for neighbours (neighbour states)
-		
+		// searching for neighbours (neighbour states)		
 		for (std::string neighbour : getNeighbourStates(node))
 		{
 			if (!visitedMap.count(neighbour))
@@ -210,6 +219,7 @@ std::vector<std::string> Puzzle::breadthFirstSearch(std::string initialState)
 
 std::vector<std::string> Puzzle::depthFirstSearch(std::string initialState)
 {
+	Puzzle::currentAlgorithm = "DFS";
 	if (isWinCondition(initialState))
 	{
 		return std::vector<std::string> {initialState};
@@ -250,6 +260,8 @@ std::vector<std::string> Puzzle::depthFirstSearch(std::string initialState)
 
 	// no solution found
 	//std::cout << "no solution found" << std::endl;
-	return std::vector<std::string>();;
+	return std::vector<std::string>();
 }
+
+
 
