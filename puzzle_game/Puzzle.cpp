@@ -13,7 +13,7 @@ Puzzle::~Puzzle()
 
 std::string Puzzle::currentAlgorithm = "";
 
-bool Puzzle::isSolvable(std::string state)
+bool Puzzle::isSolvable(std::string& state)
 {
 	int32_t inversions = 0;
 
@@ -48,29 +48,27 @@ bool Puzzle::isSolvable(std::string state)
 std::string Puzzle::generateRandomSolvableState()
 {	
 	// only works with 8 puzzle
-	const int32_t numOfValues = 9;
-	// "12345678*"
-	std::string state = "651342*87";
+	const int32_t numOfValues = 9;	
+	std::string state = "12345678*";
 
 	// shuffle first time
-	auto rng = std::default_random_engine{};
-	//std::shuffle(&state[0], &state[numOfValues], rng);
+	std::random_device rnd;
+	std::shuffle(&state[0], &state[numOfValues], rnd);	
 
-	// shuffle initial state it to be not solved at start
+	// shuffle initial state if it is not solvable
 	while (!isSolvable(state))
-	{	
-		//auto rng = std::default_random_engine{};
-		std::shuffle(&state[0], &state[numOfValues], rng);		
+	{			
+		std::shuffle(&state[0], &state[numOfValues], rnd);
 	}
 	return state;
 }
 
-bool Puzzle::isWinCondition(std::string state)
+bool Puzzle::isWinCondition(std::string& state)
 {
 	return state == "12345678*";
 }
 
-std::vector<std::string> Puzzle::getNeighbourStates(std::string state)
+std::vector<std::string> Puzzle::getNeighbourStates(std::string& state)
 {
 	// string state 1234*5678
 	// represents 1 2 3
@@ -124,7 +122,7 @@ std::vector<std::string> Puzzle::getNeighbourStates(std::string state)
 	return neighbours;
 }
 
-std::vector<std::string> Puzzle::generatePath(std::map<std::string, std::string> parentMap, std::string endState)
+std::vector<std::string> Puzzle::generatePath(std::map<std::string, std::string>& parentMap, std::string& endState)
 {
 	std::vector<std::string> path;
 	std::string parent = endState;
@@ -136,7 +134,7 @@ std::vector<std::string> Puzzle::generatePath(std::map<std::string, std::string>
 	return path;
 }
 
-std::string Puzzle::printState(std::string state)
+std::string Puzzle::printState(std::string& state)
 {
 	std::string printableState;
 	printableState.append(state);
@@ -148,6 +146,7 @@ std::string Puzzle::printState(std::string state)
 
 	else
 	{
+		std::cout << std::endl;
 		std::cout << "Win State:";
 		std::cout << std::string(2, '\n');
 	}
@@ -172,7 +171,7 @@ std::string Puzzle::printState(std::string state)
 }
 
 
-std::vector<std::string> Puzzle::breadthFirstSearch(std::string initialState)
+std::vector<std::string> Puzzle::breadthFirstSearch(std::string& initialState)
 {
 	Puzzle::currentAlgorithm = "BFS";
 	if (isWinCondition(initialState))
@@ -212,12 +211,11 @@ std::vector<std::string> Puzzle::breadthFirstSearch(std::string initialState)
 		
 		
 	}
-
 	// no solution found
 	return std::vector<std::string>();
 }
 
-std::vector<std::string> Puzzle::depthFirstSearch(std::string initialState)
+std::vector<std::string> Puzzle::depthFirstSearch(std::string& initialState)
 {
 	Puzzle::currentAlgorithm = "DFS";
 	if (isWinCondition(initialState))
@@ -257,9 +255,7 @@ std::vector<std::string> Puzzle::depthFirstSearch(std::string initialState)
 			visitedMap.insert(std::pair<std::string, std::string>(node, ""));
 		}
 	}
-
-	// no solution found
-	//std::cout << "no solution found" << std::endl;
+	// no solution found	
 	return std::vector<std::string>();
 }
 
