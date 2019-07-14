@@ -329,6 +329,149 @@ GridSearch::SearchResult GridSearch::aStarSearch(Grid & grid, Grid::Point & star
 	return GridSearch::SearchResult();
 }
 
+GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+{
+	// true if opened from the start queue, false if opened by the end queue, not opened if not exists in the map
+	std::map<Grid::Point, bool> openedBy;
+	CustomPriorityQueue startQueue;
+	CustomPriorityQueue endQueue;
+
+	// the same code like in A* implementation
+	std::map <Grid::Point, float> startDistanceMap;
+	std::map <Grid::Point, Grid::Point> startVisitedMap;
+	std::map <Grid::Point, float> endDistanceMap;
+	std::map <Grid::Point, Grid::Point> endVisitedMap;
+
+	// start the startQueue
+	startQueue.enqueue(startPos, 0);
+	startDistanceMap[startPos] = 0;
+	startVisitedMap.insert(std::pair<Grid::Point, Grid::Point>(startPos, startPos));
+	// set parent of the startPos (null)
+	startVisitedMap.at(startPos) = startPos;
+	openedBy.insert(std::pair<Grid::Point, bool>(startPos, true));
+	openedBy.at(startPos) = true;
+
+	// start the endQueue
+	endQueue.enqueue(endPos, 0);
+	endDistanceMap[endPos] = 0;
+	endVisitedMap.insert(std::pair<Grid::Point, Grid::Point>(endPos, endPos));
+	// set parent of the endPos (null)
+	endVisitedMap.at(endPos) = endPos;
+	openedBy.insert(std::pair<Grid::Point, bool>(endPos, false));
+	openedBy.at(endPos) = false;
+	
+
+	// main loop
+	while (!startQueue.isEmpty() && !endQueue.isEmpty())
+	{		
+		// from start
+		Grid::Point current = startQueue.dequeue();
+		if (openedBy.count(current) && openedBy.at(current) == false)
+		{
+			
+			// found goal or the frontier from the endQueue
+			// return solution
+			std::vector<Grid::Point> startPath = generatePath(startVisitedMap, startPos, current); // generate path from the start to the gaol
+			std::vector<Grid::Point> endPath = generatePath(endVisitedMap, endPos, current); // generate path from the goal to the start (bi-directional)
+			
+			std::vector<Grid::Point> allPath = std::vector<Grid::Point>(startPath);
+			// append the path from the end to get all paths
+			allPath.insert(std::end(allPath), std::begin(endPath), std::end(endPath));
+
+			std::vector<Grid::Point> allVisited;
+			for (std::map <Grid::Point, Grid::Point> ::iterator it = startVisitedMap.begin(); it != startVisitedMap.end(); it++)
+			{
+				allVisited.push_back(it->first);
+			}
+
+			for (std::map <Grid::Point, Grid::Point> ::iterator it = endVisitedMap.begin(); it != endVisitedMap.end(); it++)
+			{
+				allVisited.push_back(it->first);
+			}
+			GridSearch::SearchResult searchResult;
+			searchResult.path = allPath;
+			searchResult.visited = allVisited;
+
+			return searchResult;
+		}
+
+		for (Grid::Point neighbour : grid.getAdjacentCells(current))
+		{
+			float newCost = startDistanceMap[current] + grid.getCostOfEnteringCell(neighbour);
+			if (!startDistanceMap.count(neighbour) || newCost < startDistanceMap[neighbour])
+			{
+				startDistanceMap[neighbour] = newCost;
+				openedBy[neighbour] = true;
+
+				// calculate F(n) = G(n) + H(n) - steps from startPos + steps to (from) endPos (heuristics)
+				// the goal of the algorithm to keep F(n) as lowest as possible because F(n) is how our path is long
+				float priority = newCost + calculateManhattanHeuristic(endPos, neighbour);
+
+				// send this neighbour with calculated priority to our priority_map
+				startQueue.enqueue(neighbour, priority);
+
+				// set found lowest-cost neighbour as current vertex
+				startVisitedMap.insert(std::pair<Grid::Point, Grid::Point>(neighbour, current));
+				startVisitedMap.at(neighbour) = current;
+			}
+		}
+
+		// from end
+		current = endQueue.dequeue();
+		if (openedBy.count(current) && openedBy.at(current) == true)
+		{
+			// found goal or the frontier from the startQueue
+			// return solution
+			std::vector<Grid::Point> startPath = generatePath(startVisitedMap, startPos, current); // generate path from the start to the gaol
+			std::vector<Grid::Point> endPath = generatePath(endVisitedMap, endPos, current); // generate path from the goal to the start (bi-directional)
+
+			std::vector<Grid::Point> allPath = std::vector<Grid::Point>(startPath);
+			// append the path from the end to get all paths
+			allPath.insert(std::end(allPath), std::begin(endPath), std::end(endPath));
+
+			std::vector<Grid::Point> allVisited;
+			for (std::map <Grid::Point, Grid::Point> ::iterator it = startVisitedMap.begin(); it != startVisitedMap.end(); it++)
+			{
+				allVisited.push_back(it->first);
+			}
+
+			for (std::map <Grid::Point, Grid::Point> ::iterator it = endVisitedMap.begin(); it != endVisitedMap.end(); it++)
+			{
+				allVisited.push_back(it->first);
+			}
+			GridSearch::SearchResult searchResult;
+			searchResult.path = allPath;
+			searchResult.visited = allVisited;
+
+			return searchResult;
+		}
+
+		for (Grid::Point neighbour : grid.getAdjacentCells(current))
+		{
+			float newCost = endDistanceMap[current] + grid.getCostOfEnteringCell(neighbour);
+			if (!endDistanceMap.count(neighbour) || newCost < endDistanceMap[neighbour])
+			{
+				endDistanceMap[neighbour] = newCost;
+				openedBy[neighbour] = false;
+
+				// calculate F(n) = G(n) + H(n) - steps from startPos + steps to (from) endPos (heuristics)
+				// the goal of the algorithm to keep F(n) as lowest as possible because F(n) is how our path is long
+				float priority = newCost + calculateManhattanHeuristic(startPos, neighbour);
+
+				// send this neighbour with calculated priority to our priority_map
+				endQueue.enqueue(neighbour, priority);
+
+				// set found lowest-cost neighbour as current vertex
+				endVisitedMap.insert(std::pair<Grid::Point, Grid::Point>(neighbour, current));
+				endVisitedMap.at(neighbour) = current;
+			}
+		}
+	}
+
+	// no path found
+	return GridSearch::SearchResult();
+}
+
 
 std::vector<Grid::Point> GridSearch::generatePath(std::map<Grid::Point, Grid::Point> parentMap, Grid::Point & startState, Grid::Point & endState)
 {
