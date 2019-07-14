@@ -17,6 +17,11 @@ public:
 		int32_t x = 0;
 		int32_t y = 0;
 
+		int32_t priority = 0;
+
+		inline int32_t getPriority() { return priority; }
+		inline void setPriority(int32_t priorityToSet) { priority = priorityToSet; }
+
 		std::string representation;
 
 		inline int32_t getX() { return x; }
@@ -49,6 +54,12 @@ public:
 			
 		}	
 
+		inline bool operator > (const Grid::Point &rhs) const
+		{
+			return this->priority > rhs.priority;
+;
+		}
+
 		
 	};
 	Grid(int32_t _width, int32_t height);
@@ -66,7 +77,10 @@ public:
 	void setStartPosition(Grid::Point startPos);
 	void setEndPosition(Grid::Point endPos);
 	void setObstacle(Grid::Point obstaclePosition);
-	void MoveTo(Grid::Point pointToMove);	
+	void setUntraversable(Grid::Point untraversablePosition);
+	void MoveTo(Grid::Point pointToMove);
+
+	void removeCellFromGrid(int32_t atWidth, int32_t atHeight);
 	
 	// debug
 	void printGridState();	
@@ -83,8 +97,9 @@ private:
 
 	// visual representation
 	const std::string traversable = "O ";
+	const std::string untraversable = "  ";
 	const std::string moveTo = "- ";
-	const std::string obstacle = "  ";
+	const std::string obstacle = "# ";
 	const std::string start = "S ";
 	const std::string end = "E ";
 	//const std::string empty = "  ";

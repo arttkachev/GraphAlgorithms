@@ -35,22 +35,38 @@ std::vector<Grid::Point> Grid::getAdjacentCells(int32_t x, int32_t y)
 
 	if (x > 0)
 	{		
-		adjacentCells.push_back(Grid::Point(x - 1, y));
+		if (cells[x - 1][y] != untraversable)
+		{
+			adjacentCells.push_back(Grid::Point(x - 1, y));
+		}
+		
 	}
 
 	if (x < width - 1)
 	{
-		adjacentCells.push_back(Grid::Point(x + 1, y));
+		if (cells[x + 1][y] != untraversable)
+		{
+			adjacentCells.push_back(Grid::Point(x + 1, y));
+		}
+		
 	}
 
 	if (y > 0)
 	{
-		adjacentCells.push_back(Grid::Point(x, y - 1 ));
+		if (cells[x][y - 1] != untraversable)
+		{
+			adjacentCells.push_back(Grid::Point(x, y - 1));
+		}
+		
 	}
 
 	if (y < height - 1)
 	{
-		adjacentCells.push_back(Grid::Point(x, y + 1));
+		if (cells[x][y + 1] != untraversable)
+		{
+			adjacentCells.push_back(Grid::Point(x, y + 1));
+		}
+		
 	}
 
 	return adjacentCells;
@@ -78,22 +94,32 @@ void Grid::setObstacle(Grid::Point obstaclePosition)
 	cells[obstaclePosition.getX()][obstaclePosition.getY()] = obstacle;
 }
 
+void Grid::setUntraversable(Grid::Point untraversablePosition)
+{
+	cells[untraversablePosition.getX()][untraversablePosition.getY()] = untraversable;
+}
+
 void Grid::MoveTo(Grid::Point pointToMove)
 {
 	cells[pointToMove.getX()][pointToMove.getY()] = moveTo;
 }
 
+void Grid::removeCellFromGrid(int32_t atWidth, int32_t atHeight)
+{
+	//grid[atWidth].erase(atHeight);
+}
+
 void Grid::printGridState()
 {	
 	
-	for (int32_t i = 0; i < height; i++)
+	for (int32_t i = 0; i < width; i++)
 	{		
 		if (i != 0)
 		{
 			std::cout << std::endl;			
 		}
 		
-		for (int32_t j = 0; j < width; j++)
+		for (int32_t j = 0; j < height; j++)
 		{				
 			std::cout << cells[j][i];			
 		}	

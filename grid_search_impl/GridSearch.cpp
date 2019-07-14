@@ -180,6 +180,54 @@ std::vector<Grid::Point> GridSearch::dijkstra(Grid & grid, Grid::Point & startPo
 	return std::vector<Grid::Point>();
 }
 
+GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+{
+	//std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> queue;
+	CustomPriorityQueue queue;
+	std::map<Grid::Point, float> distanceMap;
+	std::map<Grid::Point, Grid::Point> visitedMap;
+
+	//startPos.setPriority(0);
+	queue.enqueue(startPos, 0);
+	distanceMap.insert(std::pair<Grid::Point, float>(startPos, 0.f));
+	visitedMap.insert(std::pair<Grid::Point, Grid::Point>(startPos, startPos));
+
+	while (!queue.isEmpty())
+	{
+		Grid::Point current = queue.dequeue();
+		//queue.pop();
+
+		if (current == endPos)
+		{
+			std::vector <Grid::Point> visitedPoints;
+			for (std::map <Grid::Point, Grid::Point> ::iterator it = visitedMap.begin(); it != visitedMap.end(); it++)
+			{
+				visitedPoints.push_back(it->first);
+			}
+			GridSearch::SearchResult searchResult;
+			searchResult.path = generatePath(visitedMap, startPos, current);
+			searchResult.visited = visitedPoints;
+
+			return searchResult;
+
+		}
+
+		for (Grid::Point neighbour : grid.getAdjacentCells(current))
+		{
+			if (!visitedMap.count(neighbour))
+			{
+				float priority = calculateManhattanHeuristic(endPos, neighbour);
+				//neighbour.setPriority(priority);
+				queue.enqueue(neighbour, priority);
+				visitedMap.insert(std::pair<Grid::Point, Grid::Point>(neighbour, current));
+				distanceMap.insert(std::pair<Grid::Point, float>(neighbour, distanceMap[current] + grid.getCostOfEnteringCell(neighbour)));
+			}
+		}
+	}
+	// no path found
+	return SearchResult();
+}
+
 
 std::vector<Grid::Point> GridSearch::generatePath(std::map<Grid::Point, Grid::Point> parentMap, Grid::Point & startState, Grid::Point & endState)
 {
@@ -206,4 +254,14 @@ Grid::Point GridSearch::getClosestVertex(std::vector<Grid::Point> vectorOfPoints
 		}
 	}
 	return closestPoint;
+}
+
+float GridSearch::calculateManhattanHeuristic(Grid::Point a, Grid::Point b)
+{
+	return (float)std::abs(a.getX() - b.getX()) + std::abs(a.getY() - b.getY());
+}
+
+float GridSearch::calculateEuclideanHeuristic(Grid::Point a, Grid::Point b)
+{
+	return (float)std::sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()));
 }
