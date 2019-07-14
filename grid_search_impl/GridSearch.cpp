@@ -180,6 +180,51 @@ std::vector<Grid::Point> GridSearch::dijkstra(Grid & grid, Grid::Point & startPo
 	return std::vector<Grid::Point>();
 }
 
+GridSearch::SearchResult GridSearch::dijkstraWithPriorityMap(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+{
+	CustomPriorityQueue queue;
+	std::map<Grid::Point, float> distanceMap;
+	std::map<Grid::Point, Grid::Point> visitedMap;
+	queue.enqueue(startPos, 0);
+	distanceMap.insert(std::pair<Grid::Point, float>(startPos, 0.f));
+	visitedMap.insert(std::pair<Grid::Point, Grid::Point>(startPos, startPos));
+
+	while (!queue.isEmpty())
+	{
+		Grid::Point current = queue.dequeue();
+		if (current == endPos)
+		{
+			std::vector <Grid::Point> visitedPoints;
+			for (std::map <Grid::Point, Grid::Point> ::iterator it = visitedMap.begin(); it != visitedMap.end(); it++)
+			{
+				visitedPoints.push_back(it->first);
+			}
+			GridSearch::SearchResult searchResult;
+			searchResult.path = generatePath(visitedMap, startPos, current);
+			searchResult.visited = visitedPoints;
+
+			return searchResult;
+
+		}
+
+		for (Grid::Point adj : grid.getAdjacentCells(current))
+		{
+			float newDist = distanceMap[current] + grid.getCostOfEnteringCell(adj);
+			if (!distanceMap.count(adj) || newDist < distanceMap[adj])
+			{
+				distanceMap[adj] = newDist;
+				visitedMap.insert(std::pair<Grid::Point, Grid::Point>(adj, current));
+				visitedMap.at(adj) = current;
+				queue.enqueue(adj, newDist);
+
+			}
+		}
+	}
+
+
+	return SearchResult();
+}
+
 GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
 {
 	//std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> queue;
@@ -226,6 +271,62 @@ GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & 
 	}
 	// no path found
 	return SearchResult();
+}
+
+GridSearch::SearchResult GridSearch::aStarSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+{
+	// with priority_map the algorithms is always takes more promising vertices with lowest total path cost
+	// this is a whole idea of the A* search
+	CustomPriorityQueue queue;
+	std::map<Grid::Point, float> distanceMap;
+	std::map<Grid::Point, Grid::Point> visitedMap;
+	queue.enqueue(startPos, 0);
+	distanceMap[startPos] = 0;
+	visitedMap.insert(std::pair<Grid::Point, Grid::Point>(startPos, startPos));
+	visitedMap.at(startPos) = startPos;
+	
+	while (!queue.isEmpty())
+	{
+		Grid::Point current = queue.dequeue();
+		if (current == endPos)
+		{
+			std::vector <Grid::Point> visitedPoints;
+			for (std::map <Grid::Point, Grid::Point> ::iterator it = visitedMap.begin(); it != visitedMap.end(); it++)
+			{
+				visitedPoints.push_back(it->first);
+			}
+			GridSearch::SearchResult searchResult;
+			searchResult.path = generatePath(visitedMap, startPos, current);
+			searchResult.visited = visitedPoints;
+
+			return searchResult;
+		}
+
+		for (Grid::Point neighbour : grid.getAdjacentCells(current))
+		{
+			// calculate G(n) - steps from startPos
+			float newCost = distanceMap[current] + grid.getCostOfEnteringCell(neighbour);
+			if (!distanceMap.count(neighbour) || newCost < distanceMap[neighbour])
+			{
+				// set found lowest-cost value to neighbour in distance map. In other words, it updates our shortest path
+				distanceMap[neighbour] = newCost;
+
+				// calculate F(n) = G(n) + H(n) - steps from startPos + steps to (from) endPos (heuristics)
+				// the goal of the algorithm to keep F(n) as lowest as possible because F(n) is how our path is long
+				float priority = newCost + calculateManhattanHeuristic(endPos, neighbour);
+
+				// send this neighbour with calculated priority to our priority_map
+				queue.enqueue(neighbour, priority);
+
+				// set found lowest-cost neighbour as current vertex
+				visitedMap.insert(std::pair<Grid::Point, Grid::Point>(neighbour, current));
+				visitedMap.at(neighbour) = current;
+			}
+		}
+	}
+
+	// no path found
+	return GridSearch::SearchResult();
 }
 
 
