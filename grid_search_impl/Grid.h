@@ -83,7 +83,9 @@ public:
 	void removeCellFromGrid(int32_t atWidth, int32_t atHeight);
 	
 	// debug
-	void printGridState();	
+	void printGridState();
+
+	void updateGridState();
 	
  
 private:
@@ -96,12 +98,12 @@ private:
 	int32_t width = 0;
 
 	// visual representation
-	const std::string traversable = "O ";
-	const std::string untraversable = "  ";
-	const std::string moveTo = "- ";
-	const std::string obstacle = "# ";
-	const std::string start = "S ";
-	const std::string end = "E ";
+	const std::string traversable = "0";
+	const std::string untraversable = " ";
+	const std::string moveTo = "-";
+	const std::string obstacle = "#";
+	const std::string start = "S";
+	const std::string end = "E";
 	//const std::string empty = "  ";
 
 	

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <windows.h>
 #include "Grid.h"
 
 
@@ -113,17 +114,59 @@ void Grid::printGridState()
 {	
 	
 	for (int32_t i = 0; i < width; i++)
-	{		
+	{	
+		//std::cout << cells[i][0];
+		
 		if (i != 0)
 		{
 			std::cout << std::endl;			
 		}
 		
+		
 		for (int32_t j = 0; j < height; j++)
 		{				
-			std::cout << cells[j][i];			
+			std::cout << cells[i][j];
+			//std::cout << " ";
 		}	
 				
+	}
+	
+}
+
+void Grid::updateGridState()
+{
+	HANDLE hCon;
+	COORD cPos;
+	hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+	std::cout.flush();
+	
+	//SetConsoleCursorPosition(hCon, cPos);
+	static float test = 0;
+	for (int32_t i = 0; i < width; i++)
+	{
+		cPos.Y =i ;
+		if (i != 0)
+		{
+			
+			//std::cout << std::endl;
+			
+			//SetConsoleCursorPosition(hCon, cPos);
+			//std::cout << std::endl;
+			//std::cout << moveTo;
+		}
+		
+		for (int32_t j = 0; j < height; j++)
+		{
+			hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+			cPos.X = j ;
+			
+			//std::cout << j;
+			SetConsoleCursorPosition(hCon, cPos);
+			std::cout << "* ";
+			
+			
+		}
+
 	}
 }
 
