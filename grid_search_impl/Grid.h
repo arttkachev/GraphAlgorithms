@@ -17,10 +17,10 @@ public:
 		int32_t x = 0;
 		int32_t y = 0;
 
-		int32_t priority = 0;
+		float priority = 0.f;
 
-		inline int32_t getPriority() { return priority; }
-		inline void setPriority(int32_t priorityToSet) { priority = priorityToSet; }
+		inline float getPriority() { return priority; }
+		inline void setPriority(float priorityToSet) { priority = priorityToSet; }
 
 		std::string representation;
 

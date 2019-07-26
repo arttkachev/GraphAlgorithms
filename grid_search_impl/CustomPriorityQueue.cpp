@@ -47,6 +47,8 @@ Grid::Point CustomPriorityQueue::dequeue()
 		_list.erase(best);
 		return best;
 	}
+
+	//return Grid::Point(0,0);
 	
 }
 

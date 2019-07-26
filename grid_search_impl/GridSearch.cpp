@@ -11,12 +11,17 @@ GridSearch::~GridSearch()
 {
 }
 
-std::vector<Grid::Point> GridSearch::depthFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+GridSearch::SearchResult GridSearch::depthFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
 {
 	
 	if (startPos == endPos)
 	{		
-		return std::vector<Grid::Point> { startPos };
+		std::vector <Grid::Point> visitedPoints;
+		visitedPoints.push_back(startPos);
+		GridSearch::SearchResult searchResult;
+		searchResult.path = visitedPoints;
+		searchResult.visited = visitedPoints;
+		return searchResult;
 	}
 	
 	
@@ -50,7 +55,16 @@ std::vector<Grid::Point> GridSearch::depthFirstSearch(Grid & grid, Grid::Point &
 				if (adj == endPos)
 				{
 					//visitedMap.erase(adj);
-					return generatePath(visitedMap, startPos, adj);
+					std::vector <Grid::Point> visitedPoints;
+					for (std::map <Grid::Point, Grid::Point> ::iterator it = visitedMap.begin(); it != visitedMap.end(); it++)
+					{
+						visitedPoints.push_back(it->first);
+					}
+					GridSearch::SearchResult searchResult;
+					searchResult.path = generatePath(visitedMap, startPos, adj);
+					searchResult.visited = visitedPoints;
+
+					return searchResult;
 				}
 			}
 		}
@@ -65,14 +79,20 @@ std::vector<Grid::Point> GridSearch::depthFirstSearch(Grid & grid, Grid::Point &
 		
 	}
 	
-	return std::vector<Grid::Point>();
+	return SearchResult();
 }
 
-std::vector<Grid::Point> GridSearch::breadthFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+GridSearch::SearchResult GridSearch::breadthFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
 {
 	if (startPos == endPos)
 	{
-		return std::vector<Grid::Point> {startPos};
+		std::vector <Grid::Point> visitedPoints;
+		visitedPoints.push_back(startPos);
+		GridSearch::SearchResult searchResult;
+		searchResult.path = visitedPoints;
+		searchResult.visited = visitedPoints;
+		return searchResult;
+
 	}
 
 	// keep track of visited vertices and parents for each vertex
@@ -95,7 +115,16 @@ std::vector<Grid::Point> GridSearch::breadthFirstSearch(Grid & grid, Grid::Point
 
 				if (adj == endPos)
 				{
-					return generatePath(visitedMap, startPos, adj);
+					std::vector <Grid::Point> visitedPoints;
+					for (std::map <Grid::Point, Grid::Point> ::iterator it = visitedMap.begin(); it != visitedMap.end(); it++)
+					{
+						visitedPoints.push_back(it->first);
+					}
+					GridSearch::SearchResult searchResult;
+					searchResult.path = generatePath(visitedMap, startPos, adj);
+					searchResult.visited = visitedPoints;
+
+					return searchResult;
 				}
 			}
 		}
@@ -108,10 +137,10 @@ std::vector<Grid::Point> GridSearch::breadthFirstSearch(Grid & grid, Grid::Point
 
 	}
 	// no solution found
-	return std::vector<Grid::Point>();
+	return SearchResult();
 }
 
-std::vector<Grid::Point> GridSearch::dijkstra(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+GridSearch::SearchResult GridSearch::dijkstra(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
 {
 	std::vector<Grid::Point> unfinishedVertices;
 	std::map<Grid::Point, float> distanceMap;
@@ -138,7 +167,17 @@ std::vector<Grid::Point> GridSearch::dijkstra(Grid & grid, Grid::Point & startPo
 
 		if (vertex == endPos)
 		{
-			return generatePath(visitedMap, startPos, vertex);
+			std::vector <Grid::Point> visitedPoints;
+			for (std::map <Grid::Point, Grid::Point> ::iterator it = visitedMap.begin(); it != visitedMap.end(); it++)
+			{
+				visitedPoints.push_back(it->first);
+			}
+			GridSearch::SearchResult searchResult;
+			searchResult.path = generatePath(visitedMap, startPos, vertex);
+			searchResult.visited = visitedPoints;
+
+			return searchResult;
+
 		}
 
 		for (Grid::Point adj : grid.getAdjacentCells(vertex))
@@ -177,21 +216,24 @@ std::vector<Grid::Point> GridSearch::dijkstra(Grid & grid, Grid::Point & startPo
 	}
 
 	// no path found
-	return std::vector<Grid::Point>();
+	return SearchResult();
 }
 
 GridSearch::SearchResult GridSearch::dijkstraWithPriorityMap(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
 {
-	CustomPriorityQueue queue;
+	std::priority_queue<Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> queue;	
 	std::map<Grid::Point, float> distanceMap;
-	std::map<Grid::Point, Grid::Point> visitedMap;
-	queue.enqueue(startPos, 0);
+	std::map<Grid::Point, Grid::Point> visitedMap;	
+	startPos.setPriority(0.f);
+	queue.push(startPos);
 	distanceMap.insert(std::pair<Grid::Point, float>(startPos, 0.f));
 	visitedMap.insert(std::pair<Grid::Point, Grid::Point>(startPos, startPos));
 
-	while (!queue.isEmpty())
+	while (!queue.empty())
 	{
-		Grid::Point current = queue.dequeue();
+		Grid::Point current = queue.top();
+		queue.pop();
+
 		if (current == endPos)
 		{
 			std::vector <Grid::Point> visitedPoints;
@@ -214,8 +256,10 @@ GridSearch::SearchResult GridSearch::dijkstraWithPriorityMap(Grid & grid, Grid::
 			{
 				distanceMap[adj] = newDist;
 				visitedMap.insert(std::pair<Grid::Point, Grid::Point>(adj, current));
-				visitedMap.at(adj) = current;
-				queue.enqueue(adj, newDist);
+				visitedMap.at(adj) = current;				
+				adj.setPriority(newDist);
+				queue.push(adj);
+				
 
 			}
 		}
@@ -227,20 +271,20 @@ GridSearch::SearchResult GridSearch::dijkstraWithPriorityMap(Grid & grid, Grid::
 
 GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
 {
-	//std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> queue;
-	CustomPriorityQueue queue;
+	std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> queue;	
 	std::map<Grid::Point, float> distanceMap;
 	std::map<Grid::Point, Grid::Point> visitedMap;
 
-	//startPos.setPriority(0);
-	queue.enqueue(startPos, 0);
+	startPos.setPriority(0.f);
+	queue.push(startPos);
+
 	distanceMap.insert(std::pair<Grid::Point, float>(startPos, 0.f));
 	visitedMap.insert(std::pair<Grid::Point, Grid::Point>(startPos, startPos));
 
-	while (!queue.isEmpty())
+	while (!queue.empty())
 	{
-		Grid::Point current = queue.dequeue();
-		//queue.pop();
+		Grid::Point current = queue.top();
+		queue.pop();
 
 		if (current == endPos)
 		{
@@ -262,8 +306,9 @@ GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & 
 			if (!visitedMap.count(neighbour))
 			{
 				float priority = calculateManhattanHeuristic(endPos, neighbour);
-				//neighbour.setPriority(priority);
-				queue.enqueue(neighbour, priority);
+				neighbour.setPriority(priority);
+				queue.push(neighbour);
+				
 				visitedMap.insert(std::pair<Grid::Point, Grid::Point>(neighbour, current));
 				distanceMap.insert(std::pair<Grid::Point, float>(neighbour, distanceMap[current] + grid.getCostOfEnteringCell(neighbour)));
 			}
@@ -277,17 +322,23 @@ GridSearch::SearchResult GridSearch::aStarSearch(Grid & grid, Grid::Point & star
 {
 	// with priority_map the algorithms is always takes more promising vertices with lowest total path cost
 	// this is a whole idea of the A* search
-	CustomPriorityQueue queue;
+
+	std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> queue;	
 	std::map<Grid::Point, float> distanceMap;
 	std::map<Grid::Point, Grid::Point> visitedMap;
-	queue.enqueue(startPos, 0);
+
+	startPos.setPriority(0.f);
+	queue.push(startPos);
+	
 	distanceMap[startPos] = 0;
 	visitedMap.insert(std::pair<Grid::Point, Grid::Point>(startPos, startPos));
 	visitedMap.at(startPos) = startPos;
 	
-	while (!queue.isEmpty())
+	while (!queue.empty())
 	{
-		Grid::Point current = queue.dequeue();
+		Grid::Point current = queue.top();
+		queue.pop();
+		
 		if (current == endPos)
 		{
 			std::vector <Grid::Point> visitedPoints;
@@ -316,7 +367,8 @@ GridSearch::SearchResult GridSearch::aStarSearch(Grid & grid, Grid::Point & star
 				float priority = newCost + calculateManhattanHeuristic(endPos, neighbour);
 
 				// send this neighbour with calculated priority to our priority_map
-				queue.enqueue(neighbour, priority);
+				neighbour.setPriority(priority);
+				queue.push(neighbour);				
 
 				// set found lowest-cost neighbour as current vertex
 				visitedMap.insert(std::pair<Grid::Point, Grid::Point>(neighbour, current));
@@ -333,8 +385,10 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 {
 	// true if opened from the start queue, false if opened by the end queue, not opened if not exists in the map
 	std::map<Grid::Point, bool> openedBy;
-	CustomPriorityQueue startQueue;
-	CustomPriorityQueue endQueue;
+	std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> startQueue;
+	std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> endQueue;
+	//CustomPriorityQueue startQueue;
+	//CustomPriorityQueue endQueue;
 
 	// the same code like in A* implementation
 	std::map <Grid::Point, float> startDistanceMap;
@@ -343,7 +397,8 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 	std::map <Grid::Point, Grid::Point> endVisitedMap;
 
 	// start the startQueue
-	startQueue.enqueue(startPos, 0);
+	startPos.setPriority(0.f);
+	startQueue.push(startPos);
 	startDistanceMap[startPos] = 0;
 	startVisitedMap.insert(std::pair<Grid::Point, Grid::Point>(startPos, startPos));
 	// set parent of the startPos (null)
@@ -352,7 +407,8 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 	openedBy.at(startPos) = true;
 
 	// start the endQueue
-	endQueue.enqueue(endPos, 0);
+	endPos.setPriority(0.f);
+	endQueue.push(endPos);
 	endDistanceMap[endPos] = 0;
 	endVisitedMap.insert(std::pair<Grid::Point, Grid::Point>(endPos, endPos));
 	// set parent of the endPos (null)
@@ -362,10 +418,12 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 	
 
 	// main loop
-	while (!startQueue.isEmpty() && !endQueue.isEmpty())
+	while (!startQueue.empty() && !endQueue.empty())
 	{		
 		// from start
-		Grid::Point current = startQueue.dequeue();
+		Grid::Point current = startQueue.top();
+		startQueue.pop();
+
 		if (openedBy.count(current) && openedBy.at(current) == false)
 		{
 			
@@ -408,7 +466,8 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 				float priority = newCost + calculateManhattanHeuristic(endPos, neighbour);
 
 				// send this neighbour with calculated priority to our priority_map
-				startQueue.enqueue(neighbour, priority);
+				neighbour.setPriority(priority);
+				startQueue.push(neighbour);
 
 				// set found lowest-cost neighbour as current vertex
 				startVisitedMap.insert(std::pair<Grid::Point, Grid::Point>(neighbour, current));
@@ -417,7 +476,9 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 		}
 
 		// from end
-		current = endQueue.dequeue();
+		current = endQueue.top();
+		endQueue.pop();
+
 		if (openedBy.count(current) && openedBy.at(current) == true)
 		{
 			// found goal or the frontier from the startQueue
@@ -459,7 +520,8 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 				float priority = newCost + calculateManhattanHeuristic(startPos, neighbour);
 
 				// send this neighbour with calculated priority to our priority_map
-				endQueue.enqueue(neighbour, priority);
+				neighbour.setPriority(priority);
+				endQueue.push(neighbour);
 
 				// set found lowest-cost neighbour as current vertex
 				endVisitedMap.insert(std::pair<Grid::Point, Grid::Point>(neighbour, current));
