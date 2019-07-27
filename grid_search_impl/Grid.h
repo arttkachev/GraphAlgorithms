@@ -12,13 +12,23 @@ public:
 	{
 	public:
 		// ctr
-		Point(int32_t x_value, int32_t y_value);		
+		Point(int32_t x_value, int32_t y_value);
+
+		int32_t x = 0;
+		int32_t y = 0;
+
+		float priority = 0.f;
 
 		inline float getPriority() { return priority; }
-		inline void setPriority(float priorityToSet) { priority = priorityToSet; }		
+		inline void setPriority(float priorityToSet) { priority = priorityToSet; }
 
-		inline int32_t& getX() { return x; }
-		inline int32_t& getY() { return y; }		
+		std::string representation;
+
+		inline int32_t getX() { return x; }
+		inline int32_t getY() { return y; }
+
+		inline std::string getRepresentation() { return representation; }
+		inline void setRepresentation(std::string representationToSet) { representation = representationToSet; }
 
 		inline void setX(int32_t x_value) { x = x_value; }
 		inline void setY(int32_t y_value) { y = y_value; }
@@ -50,18 +60,13 @@ public:
 ;
 		}
 
-	private:
-		int32_t x = 0;
-		int32_t y = 0;
-		float priority = 0.f;
-
 		
 	};
 	Grid(int32_t _width, int32_t height);
 	~Grid();
 
-	inline int32_t& getHeight() { return height; }
-	inline int32_t& getWidth() { return width; }
+	inline int32_t getHeight() { return height; }
+	inline int32_t getWidth() { return width; }
 	inline std::vector<std::vector<int32_t>>& getGrid() { return grid; }
 	void setGridValues(int32_t atWidth, int32_t atHeight, int32_t value);	
 	float getCostOfEnteringCell(Point& cell);	

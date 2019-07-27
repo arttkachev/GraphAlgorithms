@@ -27,7 +27,7 @@ void Grid::setGridValues(int32_t atWidth, int32_t atHeight, int32_t value)
 
 float Grid::getCostOfEnteringCell(Point& cell)
 {
-	return (float)grid[(int32_t)cell.getX()][(int32_t)cell.getY()];
+	return (float)grid[(int32_t)cell.x][(int32_t)cell.y];
 }
 
 std::vector<Grid::Point> Grid::getAdjacentCells(int32_t x, int32_t y)
@@ -75,7 +75,7 @@ std::vector<Grid::Point> Grid::getAdjacentCells(int32_t x, int32_t y)
 
 std::vector<Grid::Point> Grid::getAdjacentCells(Point & cell)
 {
-	return getAdjacentCells(cell.getX(), cell.getY());
+	return getAdjacentCells(cell.x, cell.y);
 }
 
 void Grid::setStartPosition(Grid::Point startPos)
