@@ -18,13 +18,13 @@ public:
 		std::vector <Grid::Point> visited;
 	};
 	
-	static GridSearch::SearchResult depthFirstSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
-	static GridSearch::SearchResult breadthFirstSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
-	static GridSearch::SearchResult dijkstra(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
-	static GridSearch::SearchResult dijkstraWithPriorityMap(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
-	static GridSearch::SearchResult bestFirstSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
-	static GridSearch::SearchResult aStarSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
-	static GridSearch::SearchResult biDirectionalAStarSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
+	static GridSearch::SearchResult depthFirstSearch(Grid* grid, Grid::Point& startPos, Grid::Point& endPos);
+	//static GridSearch::SearchResult breadthFirstSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
+	//static GridSearch::SearchResult dijkstra(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
+	//static GridSearch::SearchResult dijkstraWithPriorityMap(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
+	//static GridSearch::SearchResult bestFirstSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
+	//static GridSearch::SearchResult aStarSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
+	//static GridSearch::SearchResult biDirectionalAStarSearch(Grid& grid, Grid::Point& startPos, Grid::Point& endPos);
 
 private:
 

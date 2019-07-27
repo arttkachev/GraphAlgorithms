@@ -11,7 +11,7 @@ GridSearch::~GridSearch()
 {
 }
 
-GridSearch::SearchResult GridSearch::depthFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+GridSearch::SearchResult GridSearch::depthFirstSearch(Grid * grid, Grid::Point & startPos, Grid::Point & endPos)
 {
 	
 	if (startPos == endPos)
@@ -37,7 +37,7 @@ GridSearch::SearchResult GridSearch::depthFirstSearch(Grid & grid, Grid::Point &
 
 		// searching for adjacent cells
 		
-		for (Grid::Point adj : grid.getAdjacentCells(node))
+		for (Grid::Point adj : grid->getAdjacentCells(node))
 		{
 			//std::cout << adj.getX() << "  " << adj.getY();
 			//std::cout << std::endl;
@@ -81,7 +81,7 @@ GridSearch::SearchResult GridSearch::depthFirstSearch(Grid & grid, Grid::Point &
 	
 	return SearchResult();
 }
-
+/*
 GridSearch::SearchResult GridSearch::breadthFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
 {
 	if (startPos == endPos)
@@ -534,7 +534,7 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 	return GridSearch::SearchResult();
 }
 
-
+*/
 std::vector<Grid::Point> GridSearch::generatePath(std::map<Grid::Point, Grid::Point> parentMap, Grid::Point & startState, Grid::Point & endState)
 {
 	std::vector<Grid::Point> path;
