@@ -14,21 +14,11 @@ public:
 		// ctr
 		Point(int32_t x_value, int32_t y_value);
 
-		int32_t x = 0;
-		int32_t y = 0;
-
-		float priority = 0.f;
-
 		inline float getPriority() { return priority; }
-		inline void setPriority(float priorityToSet) { priority = priorityToSet; }
-
-		std::string representation;
+		inline void setPriority(float priorityToSet) { priority = priorityToSet; }		
 
 		inline int32_t getX() { return x; }
 		inline int32_t getY() { return y; }
-
-		inline std::string getRepresentation() { return representation; }
-		inline void setRepresentation(std::string representationToSet) { representation = representationToSet; }
 
 		inline void setX(int32_t x_value) { x = x_value; }
 		inline void setY(int32_t y_value) { y = y_value; }
@@ -60,6 +50,11 @@ public:
 ;
 		}
 
+	private:
+		int32_t x = 0;
+		int32_t y = 0;
+		float priority = 0.f;
+
 		
 	};
 	Grid(int32_t _width, int32_t height);
@@ -78,16 +73,11 @@ public:
 	void setEndPosition(Grid::Point endPos);
 	void setObstacle(Grid::Point obstaclePosition);
 	void setUntraversable(Grid::Point untraversablePosition);
-	void MoveTo(Grid::Point pointToMove);
-
-	void removeCellFromGrid(int32_t atWidth, int32_t atHeight);
+	void MoveTo(Grid::Point pointToMove);	
 	
 	// debug
 	void printGridState();
 
-	void updateGridState();
-	
- 
 private:
 
 	// we use a 2D-array to represent a grid. In this case, we're going to use a vector of vectors to represent a 2D array
