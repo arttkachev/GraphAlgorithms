@@ -145,8 +145,7 @@ std::string Puzzle::printState(std::string& state)
 	}
 
 	else
-	{
-		std::cout << std::endl;
+	{		
 		std::cout << "Win State:";
 		std::cout << std::string(2, '\n');
 	}
