@@ -133,6 +133,7 @@ GridSearch::SearchResult GridSearch::breadthFirstSearch(Grid & grid, Grid::Point
 
 GridSearch::SearchResult GridSearch::dijkstra(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
 {
+	//std::cout << startPos.getY() << std::endl;
 	std::vector<Grid::Point> unfinishedVertices;
 	std::map<Grid::Point, float> distanceMap;
 	std::map<Grid::Point, Grid::Point> visitedMap;
@@ -144,6 +145,7 @@ GridSearch::SearchResult GridSearch::dijkstra(Grid & grid, Grid::Point & startPo
 
 	while (unfinishedVertices.size() > 0)
 	{
+		
 		// find the closest vertex	
 		Grid::Point vertex = getClosestVertex(unfinishedVertices, distanceMap);
 		
@@ -155,9 +157,10 @@ GridSearch::SearchResult GridSearch::dijkstra(Grid & grid, Grid::Point & startPo
 		{
 			unfinishedVertices.erase(closestVertex_iter);
 		}
-
+		
 		if (vertex == endPos)
 		{
+			
 			std::vector <Grid::Point> visitedPoints;
 			for (std::map <Grid::Point, Grid::Point> ::iterator it = visitedMap.begin(); it != visitedMap.end(); it++)
 			{
@@ -549,6 +552,7 @@ Grid::Point GridSearch::getClosestVertex(std::vector<Grid::Point> vectorOfPoints
 			closestPoint = vertex;
 		}
 	}
+	
 	return closestPoint;
 }
 

@@ -12,8 +12,8 @@ public:
 	{
 	public:
 		// ctr
-		Point(int32_t x_value, int32_t y_value);
-
+		Point(int32_t x_value, int32_t y_value);	
+		
 		inline float getPriority() { return priority; }
 		inline void setPriority(float priorityToSet) { priority = priorityToSet; }		
 
@@ -58,6 +58,7 @@ public:
 		int32_t y = 0;
 		float priority = 0.f;
 		std::string visualRepresentation;
+		
 
 		
 	};
@@ -68,7 +69,7 @@ public:
 	inline int32_t getWidth() { return width; }
 	inline std::vector<std::vector<int32_t>>& getGrid() { return grid; }
 	void setGridValues(int32_t atWidth, int32_t atHeight, int32_t value);	
-	float getCostOfEnteringCell(Point& cell);	
+	float getCostOfEnteringCell(Point & point);	
 	std::vector<Grid::Point> getAdjacentCells(int32_t x, int32_t y);
 	std::vector<Grid::Point> getAdjacentCells(Point& cell);
 
@@ -95,11 +96,10 @@ private:
 	// visual representation
 	const std::string traversable = "0";
 	const std::string untraversable = " ";
-	const std::string moveTo = "-";
-	const std::string obstacle = "#";
+	const std::string moveTo = "><";
+	const std::string obstacle = ".";
 	const std::string start = "S";
-	const std::string end = "E";
-	//const std::string empty = "  ";
+	const std::string end = "E";	
 
 	
 };

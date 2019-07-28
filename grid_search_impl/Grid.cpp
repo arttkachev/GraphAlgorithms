@@ -9,7 +9,7 @@ Grid::Grid(int32_t _width, int32_t _height)
 	height = _height;
 
 	// set a 2D-array
-	grid = std::vector<std::vector<int32_t>>(_width, std::vector<int32_t>(_height, 1));
+	grid = std::vector<std::vector<int32_t>>(_width, std::vector<int32_t>(_height, 0));
 	points = std::vector<std::vector<Grid::Point>>(_width, std::vector<Grid::Point>(_height, Grid::Point(_width, _height)));
 }
 
@@ -24,9 +24,9 @@ void Grid::setGridValues(int32_t atWidth, int32_t atHeight, int32_t value)
 	grid[atWidth][atHeight] = value;
 }
 
-float Grid::getCostOfEnteringCell(Point& cell)
+float Grid::getCostOfEnteringCell(Point & point)
 {
-	return (float)grid[(int32_t)cell.getX()][(int32_t)cell.getY()];
+	return (float)grid[(int32_t)point.getX()][(int32_t)point.getY()];
 }
 
 std::vector<Grid::Point> Grid::getAdjacentCells(int32_t x, int32_t y)
