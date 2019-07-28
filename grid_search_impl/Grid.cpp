@@ -10,7 +10,7 @@ Grid::Grid(int32_t _width, int32_t _height)
 
 	// set a 2D-array
 	grid = std::vector<std::vector<int32_t>>(_width, std::vector<int32_t>(_height, 1));
-	cells = std::vector<std::vector<std::string>>(_width, std::vector<std::string>(_height, traversable));	
+	points = std::vector<std::vector<Grid::Point>>(_width, std::vector<Grid::Point>(_height, Grid::Point(_width, _height)));
 }
 
 
@@ -35,7 +35,7 @@ std::vector<Grid::Point> Grid::getAdjacentCells(int32_t x, int32_t y)
 
 	if (x > 0)
 	{		
-		if (cells[x - 1][y] != untraversable)
+		if (points[x - 1][y].getvisualRepresentation() != untraversable)
 		{
 			adjacentCells.push_back(Grid::Point(x - 1, y));
 		}		
@@ -43,7 +43,7 @@ std::vector<Grid::Point> Grid::getAdjacentCells(int32_t x, int32_t y)
 
 	if (x < width - 1)
 	{
-		if (cells[x + 1][y] != untraversable)
+		if (points[x + 1][y].getvisualRepresentation() != untraversable)
 		{
 			adjacentCells.push_back(Grid::Point(x + 1, y));
 		}		
@@ -51,7 +51,7 @@ std::vector<Grid::Point> Grid::getAdjacentCells(int32_t x, int32_t y)
 
 	if (y > 0)
 	{
-		if (cells[x][y - 1] != untraversable)
+		if (points[x][y - 1].getvisualRepresentation() != untraversable)
 		{
 			adjacentCells.push_back(Grid::Point(x, y - 1));
 		}		
@@ -59,7 +59,7 @@ std::vector<Grid::Point> Grid::getAdjacentCells(int32_t x, int32_t y)
 
 	if (y < height - 1)
 	{
-		if (cells[x][y + 1] != untraversable)
+		if (points[x][y + 1].getvisualRepresentation() != untraversable)
 		{
 			adjacentCells.push_back(Grid::Point(x, y + 1));
 		}		
@@ -75,27 +75,27 @@ std::vector<Grid::Point> Grid::getAdjacentCells(Point & cell)
 
 void Grid::setStartPosition(Grid::Point startPos)
 {
-	cells[startPos.getX()][startPos.getY()] = start;	
+	points[startPos.getX()][startPos.getY()].setvisualRepresentation(start);	
 }
 
 void Grid::setEndPosition(Grid::Point endPos)
 {
-	cells[endPos.getX()][endPos.getY()] = end;	
+	points[endPos.getX()][endPos.getY()].setvisualRepresentation(end);	
 }
 
 void Grid::setObstacle(Grid::Point obstaclePosition)
 {
-	cells[obstaclePosition.getX()][obstaclePosition.getY()] = obstacle;
+	points[obstaclePosition.getX()][obstaclePosition.getY()].setvisualRepresentation(obstacle);
 }
 
 void Grid::setUntraversable(Grid::Point untraversablePosition)
 {
-	cells[untraversablePosition.getX()][untraversablePosition.getY()] = untraversable;
+	points[untraversablePosition.getX()][untraversablePosition.getY()].setvisualRepresentation(untraversable);
 }
 
 void Grid::MoveTo(Grid::Point pointToMove)
 {
-	cells[pointToMove.getX()][pointToMove.getY()] = moveTo;
+	points[pointToMove.getX()][pointToMove.getY()].setvisualRepresentation(moveTo);
 }
 
 void Grid::printGridState()
@@ -110,7 +110,7 @@ void Grid::printGridState()
 		
 		for (int32_t j = 0; j < height; j++)
 		{				
-			std::cout << cells[i][j];			
+			std::cout << points[i][j].getvisualRepresentation();			
 		}	
 	}
 }
@@ -126,7 +126,7 @@ void Grid::resetGridState()
 
 		for (int32_t j = 0; j < height; j++)
 		{
-			cells[i][j] = traversable;
+			points[i][j].setvisualRepresentation(traversable);
 		}
 	}
 }
@@ -135,4 +135,5 @@ Grid::Point::Point(int32_t x_value, int32_t y_value)
 {
 	this->x = x_value;
 	this->y = y_value;
+	setvisualRepresentation("0");
 }

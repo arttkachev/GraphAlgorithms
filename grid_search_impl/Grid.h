@@ -20,6 +20,9 @@ public:
 		inline int32_t getX() { return x; }
 		inline int32_t getY() { return y; }
 
+		inline std::string& getvisualRepresentation() { return visualRepresentation; }
+		inline void setvisualRepresentation(std::string visualRepresentationToSet) { visualRepresentation = visualRepresentationToSet; }
+
 		inline void setX(int32_t x_value) { x = x_value; }
 		inline void setY(int32_t y_value) { y = y_value; }
 
@@ -54,6 +57,7 @@ public:
 		int32_t x = 0;
 		int32_t y = 0;
 		float priority = 0.f;
+		std::string visualRepresentation;
 
 		
 	};
@@ -84,7 +88,7 @@ private:
 	// we use a 2D-array to represent a grid. In this case, we're going to use a vector of vectors to represent a 2D array
 	// in the example before we used a vector of pointers to arrays to represend a 2D-array for adjacency matrix
 	std::vector<std::vector<int32_t>> grid;	
-	std::vector<std::vector<std::string>> cells;
+	std::vector<std::vector<Grid::Point>> points;
 	int32_t height = 0;
 	int32_t width = 0;
 

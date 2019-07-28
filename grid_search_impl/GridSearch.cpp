@@ -39,17 +39,9 @@ GridSearch::SearchResult GridSearch::depthFirstSearch(Grid & grid, Grid::Point &
 		// searching for adjacent cells
 		
 		for (Grid::Point adj : grid.getAdjacentCells(node))
-		{
-			//std::cout << adj.getX() << "  " << adj.getY();
-			//std::cout << std::endl;
-			//std::cout << "adj";
-			//std::cout << std::endl;
-			
+		{			
 			if (!visitedMap.count(adj))
-			{	
-				//grid.MoveTo(adj);
-				//std::cout << "NOT FOUND IN MAP! ADJ";
-				//std::cout << std::endl;				
+			{								
 				visitedMap.insert(std::pair<Grid::Point, Grid::Point>(adj, node));
 				stack.push(adj);
 				
@@ -71,10 +63,7 @@ GridSearch::SearchResult GridSearch::depthFirstSearch(Grid & grid, Grid::Point &
 		}
 		
 		if (!visitedMap.count(node))
-		{
-			//std::cout << "NOT COUNT NODE ";
-			//std::cout << std::endl;			
-			
+		{			
 			visitedMap.insert(std::pair<Grid::Point, Grid::Point>(node, node));
 		}
 
