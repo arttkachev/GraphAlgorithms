@@ -101,16 +101,16 @@ void Grid::MoveTo(Grid::Point pointToMove)
 void Grid::printGridState()
 {	
 	
-	for (int32_t i = 0; i < width; i++)
-	{			
-		if (i != 0)
+	for (int32_t _height = 0; _height < height; ++_height)
+	{	
+		if (_height != 0)
 		{
-			std::cout << std::endl;			
-		}		
-		
-		for (int32_t j = 0; j < height; j++)
+			std::cout << std::endl;
+		}
+
+		for (int32_t _width = 0; _width < width; ++_width)
 		{				
-			std::cout << points[i][j].getvisualRepresentation();			
+			std::cout << points[_width][_height].getvisualRepresentation();
 		}	
 	}
 }

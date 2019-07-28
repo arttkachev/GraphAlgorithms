@@ -96,8 +96,8 @@ private:
 	// visual representation
 	const std::string traversable = "0";
 	const std::string untraversable = " ";
-	const std::string moveTo = "><";
-	const std::string obstacle = ".";
+	const std::string moveTo = "-";
+	const std::string obstacle = "/";
 	const std::string start = "S";
 	const std::string end = "E";	
 
