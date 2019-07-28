@@ -9,7 +9,7 @@ Grid::Grid(int32_t _width, int32_t _height)
 	height = _height;
 
 	// set a 2D-array
-	grid = std::vector<std::vector<int32_t>>(_width, std::vector<int32_t>(_height, 0));
+	grid = std::vector<std::vector<int32_t>>(_width, std::vector<int32_t>(_height, 1));
 	points = std::vector<std::vector<Grid::Point>>(_width, std::vector<Grid::Point>(_height, Grid::Point(_width, _height)));
 }
 
@@ -99,8 +99,7 @@ void Grid::MoveTo(Grid::Point pointToMove)
 }
 
 void Grid::printGridState()
-{	
-	
+{		
 	for (int32_t _height = 0; _height < height; ++_height)
 	{	
 		if (_height != 0)
@@ -117,16 +116,16 @@ void Grid::printGridState()
 
 void Grid::resetGridState()
 {
-	for (int32_t i = 0; i < width; i++)
+	for (int32_t _height = 0; _height < height; ++_height)
 	{
-		if (i != 0)
+		if (_height != 0)
 		{
 			std::cout << std::endl;
 		}
 
-		for (int32_t j = 0; j < height; j++)
+		for (int32_t _width = 0; _width < width; ++_width)
 		{
-			points[i][j].setvisualRepresentation(traversable);
+			points[_width][_height].setvisualRepresentation(traversable);
 		}
 	}
 }
