@@ -16,12 +16,12 @@ public:
 	// public interface to communicate with this class
 	// BFS
 	static void breadthFirstSearch(Graph<T>* graph, Vertex<T>* sourceVertex);
-	static std::vector<Vertex<T>*>* breadthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex);
-	static std::vector<Vertex<T>*>* getPathToSource(Vertex<T>* from);
+	static std::vector<Vertex<T>*> breadthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex);
+	static std::vector<Vertex<T>*> getPathToSource(Vertex<T>* from);
 
 	// DFS
 	static void depthFirstSearch(Graph<T>* graph, Vertex<T>* sourceVertex, bool reverseNeighbours = false);
-	static std::vector<Vertex<T>*>* depthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex, bool reverseNeighbours = false);
+	static std::vector<Vertex<T>*> depthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex, bool reverseNeighbours = false);
 
 	// Dijkstra
 	static void Dijkstra(Graph<T>* graph, Vertex<T>* sourceVertex);

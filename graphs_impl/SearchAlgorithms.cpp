@@ -25,13 +25,13 @@ void SearchAlgorithms<T>::breadthFirstSearch(Graph<T>* graph, Vertex<T>* sourceV
 	}
 	
 	// make a queue to hold and check neighbours FIFO	
-	std::queue<Vertex<T>*> *queue = new std::queue<Vertex<T>*>();
-	queue->push(sourceVertex);	
+	std::queue<Vertex<T>*> queue;
+	queue.push(sourceVertex);	
 
-	while (queue->size() > 0)
+	while (queue.size() > 0)
 	{
-		Vertex<T>* firstVertexInQueue = queue->front();
-		queue->pop();
+		Vertex<T>* firstVertexInQueue = queue.front();
+		queue.pop();
 
 		for (Vertex<T>* neighbour : graph->getAdjacentVertices(firstVertexInQueue))
 		{
@@ -42,7 +42,7 @@ void SearchAlgorithms<T>::breadthFirstSearch(Graph<T>* graph, Vertex<T>* sourceV
 				neighbour->setVertexVisited(true);
 
 				// insert neighbour as last element
-				queue->push(neighbour);
+				queue.push(neighbour);
 			}
 		}
 		// and set firstVertexInQueue visited
@@ -52,11 +52,11 @@ void SearchAlgorithms<T>::breadthFirstSearch(Graph<T>* graph, Vertex<T>* sourceV
 }
 
 template<typename T>
-std::vector<Vertex<T>*>* SearchAlgorithms<T>::breadthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex)
+std::vector<Vertex<T>*> SearchAlgorithms<T>::breadthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex)
 {
 	if (sourceVertex == goalVertex)
 	{
-		return new std::vector<Vertex<T>*> {sourceVertex};
+		return std::vector<Vertex<T>*> {sourceVertex};
 	}
 	for (Vertex<T>* vertex : graph->getVerticies())
 	{
@@ -66,13 +66,13 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::breadthFirstSearchWithGoal(Graph<T
 	}
 
 	// make a queue to hold and check neighbours 
-	std::queue<Vertex<T>*> *queue = new std::queue<Vertex<T>*>();
-	queue->push(sourceVertex);
+	std::queue<Vertex<T>*> queue;
+	queue.push(sourceVertex);
 
 	while (queue->size() > 0)
 	{
-		Vertex<T>* firstVertexInQueue = queue->front();
-		queue->pop();
+		Vertex<T>* firstVertexInQueue = queue.front();
+		queue.pop();
 
 		for (Vertex<T>* neighbour : graph->getAdjacentVertices(firstVertexInQueue))
 		{
@@ -88,7 +88,7 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::breadthFirstSearchWithGoal(Graph<T
 				}
 
 				// insert neighbour as last element
-				queue->push(neighbour);
+				queue.push(neighbour);
 			}
 		}
 		// and set firstVertexInQueue visited
@@ -100,14 +100,14 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::breadthFirstSearchWithGoal(Graph<T
 }
 
 template<typename T>
-std::vector<Vertex<T>*>* SearchAlgorithms<T>::getPathToSource(Vertex<T>* from)
+std::vector<Vertex<T>*> SearchAlgorithms<T>::getPathToSource(Vertex<T>* from)
 {
-	std::vector<Vertex<T>*> *path = new std::vector<Vertex<T>*>();	
+	std::vector<Vertex<T>*> path;	
 	Vertex<T>* next = from;
 
 	while (next != nullptr)
-	{
-		path->push_back(next);
+	{		
+		path.push_back(next);
 		next = next->getParentVertex();
 	}
 	
@@ -125,13 +125,13 @@ void SearchAlgorithms<T>::depthFirstSearch(Graph<T>* graph, Vertex<T>* sourceVer
 	}
 
 	// to track visited vertices we use a stack FILO
-	std::stack<Vertex<T>*> *stack = new std::stack<Vertex<T>*>();
-	stack->push(sourceVertex);
+	std::stack<Vertex<T>*> stack;
+	stack.push(sourceVertex);
 
-	while (stack->size() > 0)
+	while (stack.size() > 0)
 	{
-		Vertex<T>* upperVertexInStack = stack->top();
-		stack->pop();
+		Vertex<T>* upperVertexInStack = stack.top();
+		stack.pop();
 
 		std::vector<Vertex<T>*> neighbours = graph->getAdjacentVertices(upperVertexInStack);
 		if (reverseNeighbours)
@@ -147,7 +147,7 @@ void SearchAlgorithms<T>::depthFirstSearch(Graph<T>* graph, Vertex<T>* sourceVer
 				neighbour->setDistance(upperVertexInStack->getDistance() + graph->getEdgeWeight(upperVertexInStack, neighbour));
 				neighbour->setVertexVisited(true);
 
-				stack->push(neighbour);
+				stack.push(neighbour);
 			}
 		}
 		upperVertexInStack->setVertexVisited(true);
@@ -156,11 +156,11 @@ void SearchAlgorithms<T>::depthFirstSearch(Graph<T>* graph, Vertex<T>* sourceVer
 }
 
 template<typename T>
-std::vector<Vertex<T>*>* SearchAlgorithms<T>::depthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex, bool reverseNeighbours)
+std::vector<Vertex<T>*> SearchAlgorithms<T>::depthFirstSearchWithGoal(Graph<T>* graph, Vertex<T>* sourceVertex, Vertex<T>* goalVertex, bool reverseNeighbours)
 {
 	if (sourceVertex == goalVertex)
 	{
-		return new std::vector<Vertex<T>*>{ sourceVertex };
+		return std::vector<Vertex<T>*>{ sourceVertex };
 	}
 
 	for (Vertex<T>* vertex : graph->getVerticies())
@@ -171,14 +171,14 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::depthFirstSearchWithGoal(Graph<T>*
 	}
 
 	// make a stack to hold and check neighbours 
-	std::stack<Vertex<T>*> *stack = new std::stack<Vertex<T>*>();
-	stack->push(sourceVertex);
+	std::stack<Vertex<T>*> stack;
+	stack.push(sourceVertex);
 
-	while (stack->size() > 0)
+	while (stack.size() > 0)
 	{
 		//FILO
-		Vertex<T>* upperVertexInStack = stack->top();
-		stack->pop();
+		Vertex<T>* upperVertexInStack = stack.top();
+		stack.pop();
 
 		std::vector<Vertex<T>*> neighbours = graph->getAdjacentVertices(upperVertexInStack);
 
@@ -201,7 +201,7 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::depthFirstSearchWithGoal(Graph<T>*
 				}
 
 				// insert neighbour on the top
-				stack->push(neighbour);
+				stack.push(neighbour);
 			}
 		}
 		// and set upperVertexInStack visited
@@ -209,7 +209,7 @@ std::vector<Vertex<T>*>* SearchAlgorithms<T>::depthFirstSearchWithGoal(Graph<T>*
 	}
 
 	// no path found
-	return nullptr;	
+	return std::vector<Vertex<T>*>();
 }
 
 template<typename T>
@@ -307,7 +307,7 @@ std::vector<Vertex<T>*> SearchAlgorithms<T>::DijkstraWithGoal(Graph<T>* graph, V
 		// and just return the path to the closest vertex because the shortest path has already been found
 		if (closestVertex == goalVertex)
 		{			
-			return *getPathToSource(closestVertex);
+			return getPathToSource(closestVertex);
 		}
 		
 
@@ -340,10 +340,8 @@ Vertex<T>* SearchAlgorithms<T>::getClosestVertex(std::vector<Vertex<T>*> vertice
 
 	for (Vertex<T>* vertex : verticesVector)
 	{
-		//std::cout << std::to_string(vertex->getDistance()) << std::endl;
 		if (vertex->getDistance() < closestVertex->getDistance())
-		{
-			//std::cout << "TRUE!!!!!" << std::endl;
+		{			
 			closestVertex = vertex;
 		}
 	}
