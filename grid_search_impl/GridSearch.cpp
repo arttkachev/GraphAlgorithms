@@ -263,7 +263,7 @@ GridSearch::SearchResult GridSearch::dijkstraWithPriorityMap(Grid & grid, Grid::
 	return SearchResult();
 }
 
-GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos, Heuristic heuristicToUse)
 {
 	std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> queue;	
 	std::map<Grid::Point, float> distanceMap;
@@ -299,7 +299,17 @@ GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & 
 		{
 			if (!visitedMap.count(neighbour))
 			{
-				float priority = calculateManhattanHeuristic(endPos, neighbour);
+				float priority;
+
+				switch (heuristicToUse)
+				{
+				case Euclidean:
+					priority = calculateEuclideanHeuristic(endPos, neighbour);
+					break;
+				case Manhattan:
+					priority = calculateManhattanHeuristic(endPos, neighbour);
+					break;
+				}
 				neighbour.setPriority(priority);
 				queue.push(neighbour);
 				
@@ -312,7 +322,7 @@ GridSearch::SearchResult GridSearch::bestFirstSearch(Grid & grid, Grid::Point & 
 	return SearchResult();
 }
 
-GridSearch::SearchResult GridSearch::aStarSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+GridSearch::SearchResult GridSearch::aStarSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos, Heuristic heuristicToUse)
 {
 	// with priority_map the algorithms is always takes more promising vertices with lowest total path cost
 	// this is a whole idea of the A* search
@@ -358,7 +368,17 @@ GridSearch::SearchResult GridSearch::aStarSearch(Grid & grid, Grid::Point & star
 
 				// calculate F(n) = G(n) + H(n) - steps from startPos + steps to (from) endPos (heuristics)
 				// the goal of the algorithm to keep F(n) as lowest as possible because F(n) is how our path is long
-				float priority = newCost + calculateManhattanHeuristic(endPos, neighbour);
+				float priority;
+
+				switch (heuristicToUse)
+				{
+				case Euclidean:					
+					priority = newCost + calculateEuclideanHeuristic(endPos, neighbour);
+					break;
+				case Manhattan:					
+					priority = newCost + calculateManhattanHeuristic(endPos, neighbour);					
+					break;
+				}			
 
 				// send this neighbour with calculated priority to our priority_map
 				neighbour.setPriority(priority);
@@ -375,14 +395,12 @@ GridSearch::SearchResult GridSearch::aStarSearch(Grid & grid, Grid::Point & star
 	return GridSearch::SearchResult();
 }
 
-GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos)
+GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid::Point & startPos, Grid::Point & endPos, Heuristic heuristicToUse)
 {
 	// true if opened from the start queue, false if opened by the end queue, not opened if not exists in the map
 	std::map<Grid::Point, bool> openedBy;
 	std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> startQueue;
-	std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> endQueue;
-	//CustomPriorityQueue startQueue;
-	//CustomPriorityQueue endQueue;
+	std::priority_queue <Grid::Point, std::vector<Grid::Point>, std::greater<Grid::Point>> endQueue;	
 
 	// the same code like in A* implementation
 	std::map <Grid::Point, float> startDistanceMap;
@@ -457,7 +475,17 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 
 				// calculate F(n) = G(n) + H(n) - steps from startPos + steps to (from) endPos (heuristics)
 				// the goal of the algorithm to keep F(n) as lowest as possible because F(n) is how our path is long
-				float priority = newCost + calculateManhattanHeuristic(endPos, neighbour);
+				float priority;
+
+				switch (heuristicToUse)
+				{
+				case Euclidean:
+					priority = newCost + calculateEuclideanHeuristic(endPos, neighbour);
+					break;
+				case Manhattan:
+					priority = newCost + calculateManhattanHeuristic(endPos, neighbour);
+					break;
+				}
 
 				// send this neighbour with calculated priority to our priority_map
 				neighbour.setPriority(priority);
@@ -511,7 +539,17 @@ GridSearch::SearchResult GridSearch::biDirectionalAStarSearch(Grid & grid, Grid:
 
 				// calculate F(n) = G(n) + H(n) - steps from startPos + steps to (from) endPos (heuristics)
 				// the goal of the algorithm to keep F(n) as lowest as possible because F(n) is how our path is long
-				float priority = newCost + calculateManhattanHeuristic(startPos, neighbour);
+				float priority;
+
+				switch (heuristicToUse)
+				{
+				case Euclidean:
+					priority = newCost + calculateEuclideanHeuristic(endPos, neighbour);
+					break;
+				case Manhattan:
+					priority = newCost + calculateManhattanHeuristic(endPos, neighbour);
+					break;
+				}
 
 				// send this neighbour with calculated priority to our priority_map
 				neighbour.setPriority(priority);
