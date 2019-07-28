@@ -115,6 +115,22 @@ void Grid::printGridState()
 	}
 }
 
+void Grid::resetGridState()
+{
+	for (int32_t i = 0; i < width; i++)
+	{
+		if (i != 0)
+		{
+			std::cout << std::endl;
+		}
+
+		for (int32_t j = 0; j < height; j++)
+		{
+			cells[i][j] = traversable;
+		}
+	}
+}
+
 Grid::Point::Point(int32_t x_value, int32_t y_value)
 {
 	this->x = x_value;

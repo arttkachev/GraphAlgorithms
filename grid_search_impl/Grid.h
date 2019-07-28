@@ -77,6 +77,7 @@ public:
 	
 	// debug
 	void printGridState();
+	void resetGridState();
 
 private:
 
